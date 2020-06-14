@@ -76,11 +76,13 @@ class TBGoodsCrawler():
                     page_pointer = 0
                 else:
                     time.sleep(random.random()+2)
-            #print('[INFO]: 关于%s的商品数据抓取完毕, 共抓取到%s条数据...' % (goods_name, len(goods_infos_dict)))
+            print('[INFO]: 关于%s的商品数据抓取完毕, 共抓取到%s条数据...' % (goods_name, len(goods_infos_dict)))
+
     '''数据保存'''
     def __save(self, data, savepath):
         fp = open(savepath, 'wb')
         pickle.dump(data, fp)
+        print(pickle.dump(data, fp))
         fp.close()
     '''模拟登录淘宝'''
     @staticmethod
@@ -93,6 +95,4 @@ class TBGoodsCrawler():
 '''run'''
 if __name__ == '__main__':
     crawler = TBGoodsCrawler()
-    data1 =crawler.run().goods_infos_dict
-    sf ='C:\\Users\\whj\\Desktop'
-    crawler.__save()
+    crawler.run()
