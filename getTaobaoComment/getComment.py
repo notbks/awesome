@@ -26,7 +26,7 @@ print(response1.text)
 
 class getComment():
     def __init__(self, **kwargs):
-        if()
+        pass
 
     @staticmethod
     def login():
