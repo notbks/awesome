@@ -11,6 +11,7 @@ import time
 import pickle
 import random
 from DecryptLogin import login
+import logging; logging.basicConfig(level=logging.INFO)
 
 
 '''淘宝商品数据小爬虫'''
@@ -42,9 +43,14 @@ class TBGoodsCrawler():
                             's': str(offset)
                         }
                 response = self.session.get(search_url, params=params)
+
+
                 if (response.status_code != 200):
                     break
                 response_json = response.json()
+
+                logging.info('response_json: %s' % response_json)
+
                 all_items = response_json.get('mods', {}).get('itemlist', {}).get('data', {}).get('auctions', [])
                 if len(all_items) == 0:
                     break

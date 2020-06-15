@@ -2,6 +2,7 @@ import os
 import requests
 from DecryptLogin import login
 import pickle
+import logging; logging.basicConfig(level=logging.INFO)
 
 auctionNumId='13734572962'
 userNumId= '90405449'
@@ -21,15 +22,53 @@ header = {
 
 
 
-response1 =requests.get(url1, headers=header, verify =False)
-print(response1.text)
+# response1 =requests.get(url1, headers=header, verify =False)
+# print(response1.text)
 
 class getComment():
-    def __init__(self, **kwargs):
-        if()
 
+    #初始化函数
+    def __init__(self, **kwargs):
+        logging.info('init~~~')
+        if os.path.isfile('session.pkl') :
+            self.session = pickle.load(open('session.pkl', 'rb'))
+            logging.info('there is already session here~')
+        else:
+            self.session = self.login()
+            f = open('session.pkl', 'wb')
+            pickle.dump(self.session, f)
+            f.close()
+            logging.info('Login secessfully~ and write down the session too')
+
+    #DecryptLogin封装好的自动登陆淘宝
     @staticmethod
     def login():
         lg = login.Login()
         infos_return, session = lg.taobao()
         return session
+
+    #run！
+    def run(self, url, page):
+        params = {
+            'auctionNumId' : '13734572962',
+            'userNumId' :'90405449',
+            'currentPageNum' : str(page),
+            'pageSize' : '20',
+            'orderType' : 'sort_weight',
+        }
+
+        response =self.session.get(url, params=params)
+        logging.info(response.json())
+
+        if response.status_code !=200:
+            logging.info('something went wrong~ status_code: %d' % response.status_code)
+
+        else:
+            logging.info(response.json())
+
+
+url = 'https://rate.taobao.com/feedRateList.htm?'
+
+if __name__ =='__main__':
+    crawl =getComment()
+    crawl.run(url, 1)
