@@ -21,7 +21,7 @@ data_list =[]
 
 # use loop and sleep to catch the data
 # 循环和休眠相结合，避免淘宝察觉是爬虫
-for i in range(1, 3, 1):
+for i in range(1, 20, 1):
     #拼接url
     url = urlf + str(i) + urll
     logging.info('url: %s' % url)
