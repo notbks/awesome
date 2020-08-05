@@ -1,7 +1,10 @@
 import numpy as np
+import pandas as pd
 
-# V2优化点：
-# 使用np的narray存储数据，输出更好看
+# V3优化点：
+# 1、输入方式变为自动读取excel
+# 2、calculate函数应该有更优雅的写法。比如使用枚举替换if
+
 
 #level是评价等级
 #data是实际评分
@@ -157,44 +160,56 @@ def calculateMaxFirst(level, data):
             return -1
 
 # 定义原始数据
-dataMinFirst =[77.5,72.5,72.5]
-dataMaxFirst =[82.5,80,82.5,82.5,77.5]
-print('原始数据')
-print(dataMinFirst)
-print(dataMaxFirst)
-print()
-dictMin =np.zeros([3,5])
-dictMax =np.zeros([5,5])
+dataFromExcel = pd.read_excel('C:\\Users\\IT\\Desktop\\awesome\\superToolMan\\dataafterETL.xlsx')
+datas =np.array(dataFromExcel)
+for dataAll in datas:
+    print('行数据：')
+    print(dataAll)
 
-# i循环是二级指标的循环
-# i=1表示初始投资，是越小越优
-for i in range(0,3):
-    # l循环是评价等级
-    tempArr = []
-    for l in range(1,6):
-        tempArr.append(calculateMinFirst(l, dataMinFirst[i]))
-    dictMin[i] =tempArr
-# print("越小越优：")
-# print('原始数据：')
-# print(dataMinFirst)
-# print(dictMin)
+    dataMinFirst =[dataAll[0], dataAll[1], dataAll[7]]
+    dataMaxFirst =[dataAll[2], dataAll[3], dataAll[4], dataAll[5], dataAll[6]]
+    # print('原始数据')
+    # print(dataAll)
+    # print(dataMinFirst)
+    # print(dataMaxFirst)
+    # print()
+    dictMin =np.zeros([3,5])
+    dictMax =np.zeros([5,5])
 
-for i in range(0,5):
-    # l循环是评价等级
-    tempArr = []
-    for l in range(1,6):
-        tempArr.append(calculateMaxFirst(l, dataMaxFirst[i]))
-    dictMax[i] =tempArr
-# print("越大越优：")
-# print('原始数据：')
-# print(dataMaxFirst)
-# print(dictMax)
+    # i循环是二级指标的循环
+    # i=1表示初始投资，是越小越优
+    for i in range(0,3):
+        # l循环是评价等级
+        tempArr = []
+        for l in range(1,6):
+            tempArr.append(calculateMinFirst(l, dataMinFirst[i]))
+        dictMin[i] =tempArr
+    # print("越小越优：")
+    # print('原始数据：')
+    # print(dataMinFirst)
+    # print(dictMin)
 
-print('终极矩阵：')
-resultArr =np.vstack((dictMin, dictMax))
-realResultArr = resultArr[[0,1,3,4,5,6,7,2]]
-print(realResultArr)
+    for i in range(0,5):
+        # l循环是评价等级
+        tempArr = []
+        for l in range(1,6):
+            tempArr.append(calculateMaxFirst(l, dataMaxFirst[i]))
+        dictMax[i] =tempArr
+    # print("越大越优：")
+    # print('原始数据：')
+    # print(dataMaxFirst)
+    # print(dictMax)
 
+    print('终极矩阵：')
+    resultArr =np.vstack((dictMin, dictMax))
+    realResultArr = resultArr[[0,1,3,4,5,6,7,2]]
+    print(realResultArr)
+
+
+
+
+
+# 暂时不考虑
 weightArr =[0.557,0.137,0.134,0.042,0.032,0.057,0.032,0.009]
 tempWeightArr = np.tile(weightArr,[5,1])
 weightArrs =np.array(tempWeightArr).T
